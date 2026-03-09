@@ -1,0 +1,11 @@
+{
+  "name": "optibot",
+  "description": "AI-powered code review with Optibot - run reviews, manage authentication, and handle API keys directly from Claude Code",
+  "version": "1.0.0",
+  "author": {
+    "name": "Optimal AI",
+    "url": "https://getoptimal.ai"
+  },
+  "homepage": "https://github.com/Optimal-AI/optibot-skill",
+  "license": "MIT"
+}

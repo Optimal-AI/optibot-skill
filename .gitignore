@@ -1,0 +1,40 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Node (if dependencies are ever added)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Build output
+dist/
+build/
+out/
+
+# Environment & secrets
+.env
+.env.*
+*.secret
+*.credentials
+*.pem
+*.key
+*.p12
+
+# npm auth
+.npmrc
+
+# Claude Code local data
+.claude/
+
+# Internal docs
+internal/
