@@ -1,8 +1,15 @@
 # Optibot — AI Code Review for Claude Code
 
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-blueviolet)](https://claude.ai/claude-code)
+[![npm](https://img.shields.io/npm/v/optibot)](https://www.npmjs.com/package/optibot)
+
 A [Claude Code](https://claude.ai/claude-code) plugin that brings [Optibot](https://getoptimal.ai) AI-powered code reviews directly into your coding workflow.
 
 Review local changes, compare branches, and get actionable feedback — all without leaving Claude Code.
+
+> **What is a Claude Code plugin?**
+> Claude Code plugins extend Claude's capabilities with new skills, tools, and integrations. Once installed, this plugin lets Claude run Optibot reviews on your behalf — just ask in natural language. Learn more about [Claude Code plugins](https://docs.anthropic.com/en/docs/claude-code/plugins).
 
 ## Installation
 
@@ -25,6 +32,9 @@ Once installed, Claude Code can:
 - **Review patch files** — point it at any `.patch` or `.diff` file
 - **Manage API keys** — create, list, and delete keys for CI/CD
 - **Fix issues** — Claude reads the review feedback and offers to apply fixes directly
+
+<!-- ## Demo -->
+<!-- ![Optibot reviewing code in Claude Code](assets/demo.gif) -->
 
 ## Usage
 
@@ -54,14 +64,26 @@ After installing the plugin, just ask Claude naturally:
   run: npx optibot review -b main
 ```
 
+## Uninstalling
+
+```bash
+claude plugin uninstall optibot
+```
+
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
 ## Links
 
 - [Optibot Website](https://getoptimal.ai)
 - [Optibot CLI on npm](https://www.npmjs.com/package/optibot)
 - [Sign Up (Free)](https://agents.getoptimal.ai/signup)
+- [Report an Issue](https://github.com/Optimal-AI/optibot-skill/issues)
 - [Claude Code](https://claude.ai/claude-code)
 - [Claude Code Plugins](https://docs.anthropic.com/en/docs/claude-code/plugins)
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE) for details.
+Copyright (c) 2026 Optimal AI, Inc.

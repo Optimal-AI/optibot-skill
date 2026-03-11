@@ -21,6 +21,9 @@ dist/
 build/
 out/
 
+# Package tarballs
+*.tgz
+
 # Environment & secrets
 .env
 .env.*

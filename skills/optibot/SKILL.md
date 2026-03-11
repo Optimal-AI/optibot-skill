@@ -1,7 +1,7 @@
 ---
 name: optibot
-description: Run AI code reviews with Optibot directly from Claude Code. Use this skill whenever the user mentions code review, optibot, reviewing changes, reviewing a branch, reviewing a diff, or wants feedback on their code before committing or opening a PR. Also use when the user needs help with optibot authentication, API keys, or CI/CD integration. Even if the user just says "review my changes" or "get feedback on this code", this skill applies.
-allowed-tools: Bash(optibot *), Bash(which optibot), Bash(npm * optibot), Bash(npx optibot *)
+description: Run AI code reviews with Optibot. Use when the user wants to review code changes, compare branches, review diffs, manage Optibot authentication or API keys, or set up CI/CD integration.
+allowed-tools: Bash(optibot *), Bash(which optibot), Bash(npm install -g optibot), Bash(npm install optibot), Bash(npx optibot *)
 ---
 
 # Optibot - AI Code Review from the Terminal
