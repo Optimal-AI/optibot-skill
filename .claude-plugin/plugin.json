@@ -4,11 +4,17 @@
   "version": "1.0.0",
   "author": {
     "name": "Optimal AI",
-    "email": "hello@getoptimal.ai",
+    "email": "support@getoptimal.ai",
     "url": "https://getoptimal.ai"
   },
   "homepage": "https://github.com/Optimal-AI/optibot-skill",
   "repository": "https://github.com/Optimal-AI/optibot-skill",
   "license": "MIT",
-  "keywords": ["code-review", "ai-review", "optibot", "ci-cd", "pull-request"]
+  "keywords": [
+    "code-review",
+    "ai-review",
+    "optibot",
+    "ci-cd",
+    "pull-request"
+  ]
 }
