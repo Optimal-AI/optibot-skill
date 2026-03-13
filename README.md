@@ -29,19 +29,20 @@ claude plugin install optibot@optimal-ai
 
 ## Getting Started
 
-Once the plugin is installed, complete setup in 2 steps:
+Authenticate with your Optibot account:
 
 ```bash
-# 1. Install the Optibot CLI
-npm install -g optibot
-
-# 2. Authenticate
 optibot login
 ```
 
 Then open Claude Code and say **"review my changes"** — you're good to go.
 
 Don't have an account? [Sign up free →](https://agents.getoptimal.ai/signup)
+
+## Requirements
+
+- [Claude Code](https://claude.ai/claude-code)
+- An [Optibot account](https://agents.getoptimal.ai/signup) (free to start)
 
 ## What It Does
 
@@ -97,7 +98,6 @@ Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines
 ## Links
 
 - [Optibot Website](https://getoptimal.ai)
-- [Optibot CLI on npm](https://www.npmjs.com/package/optibot)
 - [Sign Up (Free)](https://agents.getoptimal.ai/signup)
 - [Report an Issue](https://github.com/Optimal-AI/optibot-skill/issues)
 - [Claude Code](https://claude.ai/claude-code)
