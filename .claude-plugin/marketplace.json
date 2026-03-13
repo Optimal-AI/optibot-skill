@@ -7,10 +7,7 @@
   "plugins": [
     {
       "name": "optibot",
-      "source": {
-        "source": "github",
-        "repo": "Optimal-AI/optibot-skill"
-      },
+      "source": "./",
       "version": "1.0.0",
       "description": "AI code review that catches production-breaking bugs, business logic issues, and security vulnerabilities — directly in Claude Code.",
       "category": "code-review",
