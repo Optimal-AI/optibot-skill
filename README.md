@@ -27,6 +27,8 @@ claude plugin marketplace add Optimal-AI/optibot-skill
 claude plugin install optibot@optimal-ai
 ```
 
+![Installing Optibot on Claude Code](assets/optibot-claude-code-instruction.png)
+
 ## Getting Started
 
 Authenticate with your Optibot account:
