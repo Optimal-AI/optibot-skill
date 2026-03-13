@@ -1,12 +1,18 @@
-# Optibot — AI Code Review for Claude Code
+```
+ ██████╗ ██████╗ ████████╗██╗██████╗  ██████╗ ████████╗
+██╔═══██╗██╔══██╗╚══██╔══╝██║██╔══██╗██╔═══██╗╚══██╔══╝
+██║   ██║██████╔╝   ██║   ██║██████╔╝██║   ██║   ██║   
+██║   ██║██╔═══╝    ██║   ██║██╔══██╗██║   ██║   ██║   
+╚██████╔╝██║        ██║   ██║██████╔╝╚██████╔╝   ██║   
+ ╚═════╝ ╚═╝        ╚═╝   ╚═╝╚═════╝  ╚═════╝    ╚═╝   
+          ── AI Code Review for Claude Code ──
+```
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-blueviolet)](https://claude.ai/claude-code)
 [![npm](https://img.shields.io/npm/v/optibot)](https://www.npmjs.com/package/optibot)
 
-A [Claude Code](https://claude.ai/claude-code) plugin that brings [Optibot](https://getoptimal.ai) AI-powered code reviews directly into your coding workflow.
-
-Review local changes, compare branches, and get actionable feedback — all without leaving Claude Code.
+A [Claude Code](https://claude.ai/claude-code) plugin that brings [Optibot](https://getoptimal.ai) AI-powered code reviews directly into your coding workflow. Optibot catches production-breaking bugs, surfaces business logic issues, and strengthens security — all without leaving Claude Code.
 
 > **What is a Claude Code plugin?**
 > Claude Code plugins extend Claude's capabilities with new skills, tools, and integrations. Once installed, this plugin lets Claude run Optibot reviews on your behalf — just ask in natural language. Learn more about [Claude Code plugins](https://docs.anthropic.com/en/docs/claude-code/plugins).
@@ -14,14 +20,28 @@ Review local changes, compare branches, and get actionable feedback — all with
 ## Installation
 
 ```bash
-claude plugin install optibot
+# Add the Optimal AI marketplace (one-time setup)
+claude plugin marketplace add Optimal-AI/optibot-skill
+
+# Install Optibot
+claude plugin install optibot@optimal-ai
 ```
 
-## Requirements
+## Getting Started
 
-- [Claude Code](https://claude.ai/claude-code)
-- [Optibot CLI](https://www.npmjs.com/package/optibot) (`npm install -g optibot`)
-- An [Optibot account](https://agents.getoptimal.ai/signup) (free to start)
+Once the plugin is installed, complete setup in 2 steps:
+
+```bash
+# 1. Install the Optibot CLI
+npm install -g optibot
+
+# 2. Authenticate
+optibot login
+```
+
+Then open Claude Code and say **"review my changes"** — you're good to go.
+
+Don't have an account? [Sign up free →](https://agents.getoptimal.ai/signup)
 
 ## What It Does
 
@@ -85,5 +105,5 @@ Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE) for details.  
 Copyright (c) 2026 Optimal AI, Inc.

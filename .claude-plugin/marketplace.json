@@ -1,0 +1,20 @@
+{
+  "name": "optimal-ai",
+  "owner": {
+    "name": "Optimal AI",
+    "email": "support@getoptimal.ai"
+  },
+  "plugins": [
+    {
+      "name": "optibot",
+      "source": {
+        "source": "github",
+        "repo": "Optimal-AI/optibot-skill"
+      },
+      "version": "1.0.0",
+      "description": "AI code review that catches production-breaking bugs, business logic issues, and security vulnerabilities — directly in Claude Code.",
+      "category": "code-review",
+      "keywords": ["code-review", "ai", "git", "diff"]
+    }
+  ]
+}
