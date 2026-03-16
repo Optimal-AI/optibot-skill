@@ -32,20 +32,12 @@ A **Claude Code** plugin that brings **Optibot** AI-powered code reviews directl
 
 ### Option 1: Inside a Claude Code Session (VS Code or Terminal)
 
-Run these slash commands directly inside a Claude Code chat session:
-```
-/plugin marketplace add Optimal-AI/optibot-skill
-```
-
-Then install the plugin:
-```
-/plugin install optibot@optimal-ai
-```
-
-You can also browse and install via the plugin manager UI:
-1. Type `/plugin` to open the plugin manager
-2. Go to the **Discover** tab
-3. Find **Optibot** and press **Enter** to install
+1. Type `/plugin` in the Claude Code chat to open the **Plugin Manager UI**
+2. Navigate to the **Marketplace** tab
+3. Add the Optibot marketplace repo: `Optimal-AI/optibot-skill`
+4. Go to the **Discover** tab
+5. Find **Optibot** and press **Enter** to install
+6. Run `/reload-plugins` to activate it
 
 ---
 
