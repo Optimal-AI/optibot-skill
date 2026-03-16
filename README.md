@@ -1,12 +1,5 @@
-```
- ██████╗ ██████╗ ████████╗██╗██████╗  ██████╗ ████████╗
-██╔═══██╗██╔══██╗╚══██╔══╝██║██╔══██╗██╔═══██╗╚══██╔══╝
-██║   ██║██████╔╝   ██║   ██║██████╔╝██║   ██║   ██║   
-██║   ██║██╔═══╝    ██║   ██║██╔══██╗██║   ██║   ██║   
-╚██████╔╝██║        ██║   ██║██████╔╝╚██████╔╝   ██║   
- ╚═════╝ ╚═╝        ╚═╝   ╚═╝╚═════╝  ╚═════╝    ╚═╝   
-          ── AI Code Review for Claude Code ──
-```
+![AI Code Review for Claude Code](assets/optibot-claude-banner.png)
+
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-blueviolet)](https://claude.ai/claude-code)
