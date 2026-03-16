@@ -39,6 +39,8 @@ A **Claude Code** plugin that brings **Optibot** AI-powered code reviews directl
 5. Find **Optibot** and press **Enter** to install
 6. Run `/reload-plugins` to activate it
 
+
+![Installing Optibot on Claude Code](assets/claude-code-skill-install-gif.gif)
 ---
 
 ### Option 2: CLI (Terminal)
