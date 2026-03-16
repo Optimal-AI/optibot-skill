@@ -19,15 +19,59 @@ A [Claude Code](https://claude.ai/claude-code) plugin that brings [Optibot](http
 
 ## Installation
 
-```bash
-# Add the Optimal AI marketplace (one-time setup)
-claude plugin marketplace add Optimal-AI/optibot-skill
+# Optibot Plugin for Claude Code
 
-# Install Optibot
+A **Claude Code** plugin that brings **Optibot** AI-powered code reviews directly into your coding workflow. Optibot catches production-breaking bugs, surfaces business logic issues, and strengthens security — all without leaving Claude Code.
+
+## Requirements
+
+- [Claude Code](https://claude.ai/claude-code)
+- An [Optibot account](https://agents.getoptimal.ai/signup) (free to start)
+
+## Installation Options
+
+### Option 1: Inside a Claude Code Session (VS Code or Terminal)
+
+Run these slash commands directly inside a Claude Code chat session:
+```
+/plugin marketplace add Optimal-AI/optibot-skill
+```
+
+Then install the plugin:
+```
+/plugin install optibot@optimal-ai
+```
+
+You can also browse and install via the plugin manager UI:
+1. Type `/plugin` to open the plugin manager
+2. Go to the **Discover** tab
+3. Find **Optibot** and press **Enter** to install
+
+---
+
+### Option 2: CLI (Terminal)
+
+> **Note:** These commands are run in your regular terminal, not inside a Claude Code session.
+
+Add the marketplace:
+```bash
+claude plugin marketplace add Optimal-AI/optibot-skill
+```
+
+Install the plugin:
+```bash
 claude plugin install optibot@optimal-ai
 ```
 
+---
+
 ![Installing Optibot on Claude Code](assets/optibot-claude-code-instruction.png)
+
+
+## Verifying Installation
+
+After installing, run `/reload-plugins` inside your Claude Code session to load the plugin. You can confirm it's active by typing `/help` and looking for Optibot commands.
+
 
 ## Getting Started
 
@@ -40,11 +84,6 @@ optibot login
 Then open Claude Code and say **"review my changes"** — you're good to go.
 
 Don't have an account? [Sign up free →](https://agents.getoptimal.ai/signup)
-
-## Requirements
-
-- [Claude Code](https://claude.ai/claude-code)
-- An [Optibot account](https://agents.getoptimal.ai/signup) (free to start)
 
 ## What It Does
 
