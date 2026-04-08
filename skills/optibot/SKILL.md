@@ -30,7 +30,7 @@ Optibot needs authentication before running reviews. There are two methods:
 ```bash
 optibot login
 ```
-This opens a browser for OAuth. The token is stored in `~/.optibot/config.json` and lasts 90 days.
+This opens a browser for OAuth. New users will be guided through account setup (creating an organization) before being redirected back. The token is stored in `~/.optibot/config.json` and lasts 90 days.
 
 **API key** (for CI/CD or headless environments):
 Set the environment variable:
