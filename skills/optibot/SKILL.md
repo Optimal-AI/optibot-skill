@@ -1,7 +1,7 @@
 ---
 name: optibot
 description: Run AI code reviews with Optibot. Use when the user wants to review code changes, compare branches, review diffs, manage Optibot authentication or API keys, or set up CI/CD integration.
-allowed-tools: Bash(optibot *), Bash(which optibot), Bash(npm install -g optibot), Bash(npm install optibot), Bash(npx optibot *), Bash(cat ~/.optibot/config.json), Bash(test -f ~/.optibot/config.json *), Bash(echo $OPTIBOT_API_KEY)
+allowed-tools: Bash(optibot *), Bash(which optibot), Bash(npm install -g @optimalai/optibot), Bash(npm install @optimalai/optibot), Bash(npx @optimalai/optibot *), Bash(cat ~/.optibot/config.json), Bash(test -f ~/.optibot/config.json *), Bash(echo $OPTIBOT_API_KEY)
 ---
 
 # Optibot - AI Code Review from the Terminal
@@ -19,7 +19,7 @@ which optibot
 If not found, install it:
 
 ```bash
-npm install -g optibot
+npm install -g @optimalai/optibot
 ```
 
 ## Authentication
@@ -161,10 +161,10 @@ If the user wants optibot in their CI pipeline, suggest this pattern:
 - name: Run Optibot Review
   env:
     OPTIBOT_API_KEY: ${{ secrets.OPTIBOT_API_KEY }}
-  run: npx optibot review -b main
+  run: npx @optimalai/optibot review -b main
 ```
 
 Key points:
-- Use `npx optibot` so it doesn't need a global install
+- Use `npx @optimalai/optibot` so it doesn't need a global install
 - Always use `-b` in CI to compare the PR branch against the base
 - Store the API key as a repository secret, never in code

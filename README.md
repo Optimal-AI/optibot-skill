@@ -3,7 +3,7 @@
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-blueviolet)](https://claude.ai/claude-code)
-[![npm](https://img.shields.io/npm/v/optibot)](https://www.npmjs.com/package/optibot)
+[![npm](https://img.shields.io/npm/v/@optimalai/optibot)](https://www.npmjs.com/package/@optimalai/optibot)
 
 A [Claude Code](https://claude.ai/claude-code) plugin that brings [Optibot](https://getoptimal.ai) AI-powered code reviews directly into your coding workflow. Optibot catches production-breaking bugs, surfaces business logic issues, and strengthens security — all without leaving Claude Code.
 
@@ -110,7 +110,7 @@ After installing the plugin, just ask Claude naturally:
 - name: Optibot Review
   env:
     OPTIBOT_API_KEY: ${{ secrets.OPTIBOT_API_KEY }}
-  run: npx optibot review -b main
+  run: npx @optimalai/optibot review -b main
 ```
 
 ## Uninstalling
