@@ -41,3 +41,6 @@ out/
 
 # Internal docs
 internal/
+
+# Local-only Claude memory (per-developer)
+CLAUDE.local.md
