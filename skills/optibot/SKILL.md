@@ -1,7 +1,7 @@
 ---
 name: optibot
 description: Run AI code reviews with Optibot. Use when the user wants to review code changes, compare branches, review diffs, manage Optibot authentication or API keys, or set up CI/CD integration.
-allowed-tools: Bash(optibot *), Bash(which optibot), Bash(npm install -g optibot), Bash(npm install optibot), Bash(npx optibot *)
+allowed-tools: Bash(optibot *), Bash(which optibot), Bash(npm install -g optibot), Bash(npm install optibot), Bash(npx optibot *), Bash(cat ~/.optibot/config.json), Bash(test -f ~/.optibot/config.json *), Bash(echo $OPTIBOT_API_KEY)
 ---
 
 # Optibot - AI Code Review from the Terminal
@@ -51,6 +51,34 @@ The key is shown once — save it immediately. Keys always start with `optk_`.
 optibot apikey list       # See all keys with creation/last-used dates
 optibot apikey delete ID  # Revoke a key by its ID
 ```
+
+## Logout
+
+To remove saved credentials from the local machine:
+
+```bash
+optibot logout
+```
+
+This deletes the stored token from `~/.optibot/config.json`. After logging out, the user must run `optibot login` or set `OPTIBOT_API_KEY` before running reviews again.
+
+## Checking Auth Status
+
+To check whether the user is currently authenticated, verify the config file:
+
+```bash
+test -f ~/.optibot/config.json && cat ~/.optibot/config.json
+```
+
+If the file exists and contains a valid `apiKey` or `token` field, the user is authenticated. If the file is missing or empty, they need to log in.
+
+You can also check for the environment variable:
+
+```bash
+echo $OPTIBOT_API_KEY
+```
+
+If neither the config file nor the environment variable is set, prompt the user to authenticate (see [Authentication](#authentication)).
 
 ## Running Reviews
 
