@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-04-30
+
+### Changed
+
+- Restructured the Authentication section as a decision tree: dev-machine login, CI/CD setup, and "already inside a CI runner" each get explicit guidance.
+- The skill now routes CI/CD-related requests (GitHub Actions, GitLab CI, Jenkins, `OPTIBOT_API_KEY`) through `optibot setup ci` — the new guided CI onboarding command in CLI 0.4.0.
+- CI/CD section updated to reflect that the canonical setup is `optibot setup ci`. The GitHub Actions template remains as a reference for users who already have a key.
+- Added explicit fallback note for users on CLI < 0.4.0 (use `optibot apikey create <name>` instead).
+
 ## [1.0.0] - 2026-03-11
 
 ### Added

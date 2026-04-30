@@ -99,9 +99,11 @@ After installing the plugin, just ask Claude naturally:
 
 ## Authentication
 
-**Interactive** — run `optibot login` to authenticate via browser (90-day token).
+**On a dev machine** — run `optibot login` to authenticate via browser (90-day token).
 
-**CI/CD** — set `OPTIBOT_API_KEY=optk_...` as an environment variable.
+**Setting up CI/CD** — run `optibot setup ci` (CLI ≥ 0.4.0). It logs you in if needed, mints a long-lived API key, and prints copy-paste snippets for GitHub Actions and GitLab CI.
+
+**Inside a CI runner** — set `OPTIBOT_API_KEY=optk_...` as an environment variable. Get the key with `optibot setup ci` from a dev machine first.
 
 ## CI/CD Integration
 
