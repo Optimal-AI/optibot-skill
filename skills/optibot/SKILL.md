@@ -45,7 +45,7 @@ If `optibot setup ci` fails with `unknown command`, the user is on CLI < 0.4.0. 
 ```bash
 optibot apikey create ci-key
 ```
-…and use the GitHub Actions snippet from the [CI/CD Setup](#cicd-setup) section below.
+Then wire the printed `optk_...` value into the user's CI provider as `OPTIBOT_API_KEY` and follow the per-provider contract in the [CI/CD Setup](#cicd-setup) section below (npx invocation + base-branch flag + secret name).
 
 ### Already running inside a CI runner
 
