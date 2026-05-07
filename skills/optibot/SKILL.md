@@ -167,36 +167,20 @@ The most powerful pattern is reviewing before committing or opening a PR:
 
 ## CI/CD Setup
 
-The recommended setup is `optibot setup ci` from a dev machine — it mints a key and prints the YAML you need.
+The recommended path is `optibot setup ci` from a dev machine — it logs the user in if needed, mints a long-lived API key bound to the active organization, and prints the `export OPTIBOT_API_KEY=...` line ready to paste into the CI provider's secret store.
 
-If the user already has a key (`optk_...`) and just wants a reference snippet, here's the GitHub Actions template the CLI prints:
+The contract for any CI provider is:
 
-```yaml
-# .github/workflows/optibot.yml
-name: Optibot Review
-on:
-  pull_request:
-    types: [opened, synchronize]
-
-jobs:
-  review:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - name: Run Optibot
-        env:
-          OPTIBOT_API_KEY: ${{ secrets.OPTIBOT_API_KEY }}
-        run: npx -y @optimalai/optibot review -b ${{ github.base_ref }}
+```bash
+export OPTIBOT_API_KEY=optk_...        # from the secret store
+npx -y @optimalai/optibot review -b <base-branch>
 ```
 
-Key points:
-- Use `npx -y @optimalai/optibot` so it does not need a global install.
-- Always use `-b` in CI to compare against the base branch.
-- Store the API key as a repository secret named `OPTIBOT_API_KEY` — never inline it.
+Key points to surface to the user:
+- Always use `npx -y @optimalai/optibot` in CI — no global install needed.
+- Always pass `-b <base-branch>` so the CLI knows what to diff against.
+- Store the key as a CI secret named exactly `OPTIBOT_API_KEY` — never inline it.
+- For GitHub Actions, set `fetch-depth: 0` on the checkout step so the base branch is reachable.
+- For GitLab CI, the default checkout doesn't include the target branch — `git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME` first.
 
-For GitLab CI, Jenkins, or other providers, run `optibot setup ci` to get the equivalent snippet.
+For provider-specific YAML, point the user at the Optimal AI docs (forthcoming). Don't paste a stale snippet.
