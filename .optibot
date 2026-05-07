@@ -3,7 +3,7 @@
     "auto": true,
     "exclude": [],
     "include": [],
-    "autoApprove": false,
+    "autoApprove": true,
     "codeSuggestions": true,
     "codeSuggestionsSkipFiles": []
   },
