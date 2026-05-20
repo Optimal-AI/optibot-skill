@@ -1,7 +1,7 @@
 {
   "name": "optibot",
   "description": "AI code review that catches production-breaking bugs, business logic issues, and security vulnerabilities — directly in Claude Code.",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "author": {
     "name": "Optimal AI",
     "email": "support@getoptimal.ai",

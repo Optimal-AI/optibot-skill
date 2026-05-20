@@ -1,7 +1,7 @@
 ---
 name: optibot
-description: Run AI code reviews with Optibot. Use when the user wants to review code changes, compare branches, review diffs, manage Optibot authentication or API keys, or set up CI/CD integration.
-allowed-tools: Bash(optibot *), Bash(which optibot), Bash(npm install -g @optimalai/optibot), Bash(npm install @optimalai/optibot), Bash(npx @optimalai/optibot *), Bash(cat ~/.optibot/config.json), Bash(test -f ~/.optibot/config.json *), Bash(echo $OPTIBOT_API_KEY)
+description: Run AI code reviews with Optibot. Use when the user wants to review code changes, compare branches, review diffs, manage authentication or API keys, or set up Optibot in CI/CD (GitHub Actions, GitLab CI, Jenkins). For CI/CD requests, route through `optibot setup ci`.
+allowed-tools: Bash(optibot *), Bash(optibot setup ci *), Bash(which optibot), Bash(npm install -g @optimalai/optibot), Bash(npm install @optimalai/optibot), Bash(npx @optimalai/optibot *), Bash(cat ~/.optibot/config.json), Bash(test -f ~/.optibot/config.json *), Bash(echo $OPTIBOT_API_KEY)
 ---
 
 # Optibot - AI Code Review from the Terminal
@@ -24,26 +24,39 @@ npm install -g @optimalai/optibot
 
 ## Authentication
 
-Optibot needs authentication before running reviews. There are two methods:
+Optibot needs authentication before running reviews. Pick the right path for the situation:
 
-**Interactive login** (for humans at a terminal):
+### On a dev machine, just installing
+
 ```bash
 optibot login
 ```
-This opens a browser for OAuth. New users will be guided through account setup (creating an organization) before being redirected back. The token is stored in `~/.optibot/config.json` and lasts 90 days.
+Opens a browser for OAuth. New users are guided through account setup (creating an organization) before being redirected back. The token is stored in `~/.optibot/config.json` and lasts 90 days.
 
-**API key** (for CI/CD or headless environments):
-Set the environment variable:
+### Setting up CI/CD or automation (recommended path for CI questions)
+
 ```bash
-export OPTIBOT_API_KEY=optk_...
+optibot setup ci
 ```
 
-Or create a key through the CLI:
-```bash
-optibot apikey create "my-key-name"
-```
+This is the **guided flow**. It logs you in if needed, confirms the right organization, mints a long-lived API key, and prints copy-paste snippets for GitHub Actions, GitLab CI, and a generic shell. The key never expires; revoke it later with `optibot apikey delete <id>`.
 
-The key is shown once — save it immediately. Keys always start with `optk_`.
+If `optibot setup ci` fails with `unknown command`, the user is on CLI < 0.4.0. Fall back to:
+```bash
+optibot apikey create ci-key
+```
+Then wire the printed `optk_...` value into the user's CI provider as `OPTIBOT_API_KEY` and follow the per-provider contract in the [CI/CD Setup](#cicd-setup) section below (npx invocation + base-branch flag + secret name).
+
+### Already running inside a CI runner
+
+Set `OPTIBOT_API_KEY` from your CI provider's secrets. Run `optibot setup ci` **on a dev machine first** to mint that key — never inside a CI runner. Attempting `optibot login` inside CI will refuse with a clear error in CLI ≥ 0.4.0; on older versions it hangs for 5 minutes waiting for a browser nobody can see.
+
+### Routing trigger phrases
+
+If the user mentions any of the following, run `optibot setup ci` (or fall back to `optibot apikey create <name>` on older CLIs):
+- "GitHub Actions" / "GitLab CI" / "Jenkins" / "CircleCI" / "Buildkite"
+- "OPTIBOT_API_KEY"
+- "set up Optibot in CI" / "automate Optibot" / "CI integration"
 
 ### Managing API keys
 
@@ -154,17 +167,20 @@ The most powerful pattern is reviewing before committing or opening a PR:
 
 ## CI/CD Setup
 
-If the user wants optibot in their CI pipeline, suggest this pattern:
+The recommended path is `optibot setup ci` from a dev machine — it logs the user in if needed, mints a long-lived API key bound to the active organization, and prints the `export OPTIBOT_API_KEY=...` line ready to paste into the CI provider's secret store.
 
-```yaml
-# GitHub Actions example
-- name: Run Optibot Review
-  env:
-    OPTIBOT_API_KEY: ${{ secrets.OPTIBOT_API_KEY }}
-  run: npx @optimalai/optibot review -b main
+The contract for any CI provider is:
+
+```bash
+export OPTIBOT_API_KEY=optk_...        # from the secret store
+npx -y @optimalai/optibot review -b <base-branch>
 ```
 
-Key points:
-- Use `npx @optimalai/optibot` so it doesn't need a global install
-- Always use `-b` in CI to compare the PR branch against the base
-- Store the API key as a repository secret, never in code
+Key points to surface to the user:
+- Always use `npx -y @optimalai/optibot` in CI — no global install needed.
+- Always pass `-b <base-branch>` so the CLI knows what to diff against.
+- Store the key as a CI secret named exactly `OPTIBOT_API_KEY` — never inline it.
+- For GitHub Actions, set `fetch-depth: 0` on the checkout step so the base branch is reachable.
+- For GitLab CI, the default checkout doesn't include the target branch — `git fetch origin $CI_MERGE_REQUEST_TARGET_BRANCH_NAME` first.
+
+For provider-specific YAML, point the user at the Optimal AI docs (forthcoming). Don't paste a stale snippet.
