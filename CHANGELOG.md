@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-05-20
+
+### Changed
+
+- SKILL.md no longer embeds GitHub Actions YAML inline — CI setup guidance now points at the canonical docs and the `optibot setup ci` flow.
+- Reworded the older-CLI fallback so it references the per-provider contract instead of the removed inline snippet.
+
 ## [1.1.0] - 2026-04-30
 
 ### Changed
