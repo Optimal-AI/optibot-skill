@@ -1,0 +1,36 @@
+---
+description: Use Optibot to run AI code reviews when the user wants to review code changes, compare a branch against its base, review a diff or patch file, or set up Optibot in CI/CD.
+alwaysApply: false
+---
+
+# Optibot — AI code review
+
+Use Optibot whenever the user asks to review code. Typical triggers are phrases
+such as "review my changes", "review this diff", "compare my branch against
+main", or "set up code review in CI". Optibot sends the changes to an AI reviewer
+and returns actionable feedback on bugs, business logic, and security issues.
+
+## How to run a review
+
+There are two ways to drive Optibot, and both are available once this plugin is
+installed:
+
+1. **MCP server (preferred in Cursor).** This plugin registers the Optibot MCP
+   server, which exposes tools for authentication, reviews, API keys, and CI
+   setup. Call those tools directly. If no `OPTIBOT_API_KEY` is set, run the
+   login tool first to authenticate through the browser.
+2. **CLI fallback.** If the user prefers the terminal, install the CLI with
+   `npm install -g @optimalai/optibot` and run `optibot review` for local
+   changes or `optibot review --base main` to compare against a base branch.
+
+## Authentication
+
+Optibot needs authentication before it can review. On a developer machine, use
+the browser-based login flow. For non-interactive environments such as CI, set
+the `OPTIBOT_API_KEY` environment variable to an `optk_` key instead.
+
+## After a review
+
+Summarize the findings for the user, group them by severity, and offer to apply
+the suggested fixes. For CI and pull-request automation, route the user through
+the CI setup flow rather than wiring it up by hand.
