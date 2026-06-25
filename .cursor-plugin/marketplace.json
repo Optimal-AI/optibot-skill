@@ -1,0 +1,18 @@
+{
+  "name": "optimal-ai",
+  "owner": {
+    "name": "Optimal AI",
+    "email": "support@getoptimal.ai"
+  },
+  "metadata": {
+    "description": "AI code review tools from Optimal AI for the Cursor community.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "optibot",
+      "source": "./",
+      "description": "AI code review that catches production-breaking bugs, business logic issues, and security vulnerabilities directly in Cursor."
+    }
+  ]
+}

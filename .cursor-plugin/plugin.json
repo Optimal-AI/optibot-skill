@@ -1,0 +1,20 @@
+{
+  "name": "optibot",
+  "displayName": "Optibot",
+  "description": "AI code review in Cursor that catches production-breaking bugs, business logic issues, and security vulnerabilities. Review local changes, branch diffs, and patch files through the Optibot MCP server or CLI.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Optimal AI",
+    "email": "support@getoptimal.ai",
+    "url": "https://getoptimal.ai"
+  },
+  "license": "MIT",
+  "keywords": [
+    "code-review",
+    "ai-review",
+    "optibot",
+    "ci-cd",
+    "pull-request",
+    "mcp"
+  ]
+}

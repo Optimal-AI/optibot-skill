@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "optibot": {
+      "command": "npx",
+      "args": ["-y", "@optimalai/optibot-mcp"]
+    }
+  }
+}
