@@ -9,6 +9,7 @@
     "url": "https://getoptimal.ai"
   },
   "license": "MIT",
+  "logo": "assets/optibot-logo.png",
   "keywords": [
     "code-review",
     "ai-review",
