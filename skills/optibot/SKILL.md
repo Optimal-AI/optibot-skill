@@ -135,7 +135,7 @@ The review output has two sections:
 
 **File Comments** — Specific feedback tied to file paths and line numbers. Each comment references the exact file and line range. Use these to navigate directly to the code that needs attention.
 
-**Usage counter** — Shows how many reviews have been used out of the daily limit (e.g., `Reviews used: 3/20 (17 remaining)`).
+**Usage counter** — Shows how many reviews have been used out of the applicable review limit (e.g., `Reviews used: 3/20 (17 remaining)`).
 
 ## After a Review
 
@@ -159,7 +159,9 @@ The most powerful pattern is reviewing before committing or opening a PR:
 | Error | Meaning | Fix |
 |-------|---------|-----|
 | Authentication failed (401) | Token expired or invalid API key | Run `optibot login` or check `OPTIBOT_API_KEY` |
-| Review limit reached (429) | Daily quota exhausted | Wait for reset (shown in error) or contact getoptimal.ai |
+| Daily review limit reached (429) | Daily quota exhausted | Wait for the reset shown in the error message |
+| Trial review limit reached (429) | The trial's total review allowance is used up | Upgrade at agents.getoptimal.ai/dashboard/billing |
+| Review limit reached (429) | The organization's review ceiling has been reached | Contact getoptimal.ai/contact to raise it |
 | No seat assigned (403) | User not assigned in their org | Ask org admin to assign a seat |
 | Plan doesn't include reviews (402) | Free/basic plan | Upgrade at getoptimal.ai |
 | No changes to review | Empty diff | Make some changes first, or use `-b` to compare branches |
