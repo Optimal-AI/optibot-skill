@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-08-17
+
+### Added
+
+- Agent review mode guidance in SKILL.md: when the caller is a coding agent that already holds the working copy, it runs `optibot review --agent --json` (optionally with `--related` and `--diagnostics`) for fast, structured findings instead of human-facing prose.
+- The signal-versus-noise self-report: after an agent-mode review, the agent classifies every finding as a real issue, a valid suggestion, or noise, then prints a block-character signal-versus-noise bar with counts, Signal%/Noise%, and the signal-to-noise ratio against the 5:1 trust threshold, followed by an auditable per-finding table.
+- The `missingContext` resubmit loop: read the named files and re-run with `--related`, capped at about two rounds (each round spends one review from the daily quota).
+
+### Changed
+
+- The Interpreting Results section now covers agent mode's structured `AgentReviewResponse` findings alongside the existing full-mode Summary and File Comments guidance.
+
 ## [1.1.1] - 2026-05-20
 
 ### Changed
