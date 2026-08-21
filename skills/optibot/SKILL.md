@@ -144,6 +144,18 @@ The `--json` flag makes the CLI return machine-readable findings instead of form
 
 **How it differs from full mode.** The plain `optibot review` (and its `-b` / `--diff` variants above) is a thorough, multi-pass review that returns a human-facing Summary plus File Comments. Agent mode is a single fast pass tuned for a coding agent that already has the code: it returns structured findings, trades some recall for higher precision, and is meant to be consumed and acted on programmatically. Reach for full mode when a person is reading the output; reach for agent mode when you are.
 
+### Ways to run agent mode (and when to use each)
+
+There are a few distinct ways to drive a review, and they compose rather than compete. A typical agent-driven review is the raw agent review, followed by the self-report, and a resubmit if the reviewer asked for more context. Use this list to orient yourself, then follow the detailed section each one points to.
+
+- **Raw agent review** (`optibot review --agent --json`) — the fast default. Use it whenever you are a coding agent mid-change and want quick, structured, machine-actionable findings. This is the starting point for every other pattern below.
+- **Agent review plus the signal/noise self-report** — the recommended default behavior. After every raw agent review, classify each finding and print the signal-versus-noise report so the user knows how far to trust the results. Always do this; see [Signal vs noise self-report](#signal-vs-noise-self-report-required-after-every-agent-mode-review) for the exact procedure and output format.
+- **Missing-context resubmit** — when the response comes back with a non-empty `missingContext` array, the reviewer is telling you it could not see files it needs. Read those files and re-run with `--related`, capped at about two rounds; see [Resubmit when context is missing](#resubmit-when-context-is-missing). Note that the CLI also auto-resubmits on `missingContext` (up to two rounds) on your behalf, so you may already receive the resubmitted result.
+- **Pre-attached context** (`--related <path>` / `--diagnostics <file>`) — when you already know which files matter (the interface the change implements, a caller of the changed function, or your local `tsc`/`eslint` output), attach them up front so the reviewer has them on the first pass. This can avoid a resubmit round entirely; the flags are described in the run instructions above.
+- **Full mode** (plain `optibot review`) — when you want the broader, slower, server-side review written for a human to read. It covers large, cross-file changes more thoroughly but returns prose a machine cannot act on directly and costs more server time. Reach for it when a person is reading the output; reach for agent mode when you are. See [Running Reviews](#running-reviews) for its variants.
+
+The same agent-mode review is also available through the Optibot MCP server's `review_agent` tool for MCP hosts such as Cursor and Claude Desktop, where the host re-calls the tool with `relatedPaths` when the reviewer reports missing context.
+
 ### The `--json` response shape
 
 `optibot review --agent --json` returns an `AgentReviewResponse` object:

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-08-21
+
+### Added
+
+- A "Ways to run agent mode (and when to use each)" overview near the top of the Agent review mode section, orienting a coding agent among its choices: the raw agent review, the agent review plus signal/noise self-report, the missing-context resubmit (noting the CLI also auto-resubmits), pre-attached `--related`/`--diagnostics` context, and full mode for a human reader. Each entry cross-references the existing detailed section rather than duplicating it.
+- A note that the same agent-mode review is available through the Optibot MCP server's `review_agent` tool for MCP hosts such as Cursor and Claude Desktop, where the host re-calls the tool with `relatedPaths` when the reviewer reports missing context.
+
 ## [1.2.0] - 2026-08-17
 
 ### Added
