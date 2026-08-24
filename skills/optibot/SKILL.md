@@ -147,10 +147,9 @@ The `--json` flag makes the CLI return machine-readable findings instead of form
 
 ### Ways to run agent mode (and when to use each)
 
-There are a few distinct ways to drive a review, and they compose rather than compete. A typical agent-driven review is the raw agent review, followed by the self-report, and a resubmit if the reviewer asked for more context. Use this list to orient yourself, then follow the detailed section each one points to.
+There are a few distinct ways to drive a review, and they compose rather than compete. A typical agent-driven review is the raw agent review, plus a resubmit if the reviewer asked for more context. Use this list to orient yourself, then follow the detailed section each one points to.
 
 - **Raw agent review** (`optibot review --agent --json`) — the fast default. Use it whenever you are a coding agent mid-change and want quick, structured, machine-actionable findings. This is the starting point for every other pattern below.
-- **Agent review plus the signal/noise self-report** — the recommended default behavior. After every raw agent review, classify each finding and print the signal-versus-noise report so the user knows how far to trust the results. Always do this; see [Signal vs noise self-report](#signal-vs-noise-self-report-required-after-every-agent-mode-review) for the exact procedure and output format.
 - **Missing-context resubmit** — when the response comes back with a non-empty `missingContext` array, the reviewer is telling you it could not see files it needs. Read those files and re-run with `--related`, capped at about two rounds; see [Resubmit when context is missing](#resubmit-when-context-is-missing). Note that the CLI also auto-resubmits on `missingContext` (up to two rounds) on your behalf, so you may already receive the resubmitted result.
 - **Pre-attached context** (`--related <path>` / `--diagnostics <file>`) — when you already know which files matter (the interface the change implements, a caller of the changed function, or your local `tsc`/`eslint` output), attach them up front so the reviewer has them on the first pass. This can avoid a resubmit round entirely; the flags are described in the run instructions above.
 - **Full mode** (plain `optibot review`) — when you want the broader, slower, server-side review written for a human to read. It covers large, cross-file changes more thoroughly but returns prose a machine cannot act on directly and costs more server time. Reach for it when a person is reading the output; reach for agent mode when you are. See [Running Reviews](#running-reviews) for its variants.
@@ -191,50 +190,6 @@ Each entry in `findings` has this shape:
 }
 ```
 
-### Signal vs noise self-report (required after every agent-mode review)
-
-After you receive the findings, you must classify every one of them and print a signal-versus-noise report. You hold the working copy, so you are in the best position to say which findings are real. This report keeps the review honest and tells the user at a glance how far they should trust it.
-
-Classify each finding, by its `id`, into exactly one of three buckets:
-
-- **Signal · real issue** — a genuine bug, security hole, correctness error, performance problem, or real maintainability defect, confirmed by opening the cited file and lines.
-- **Signal · valid suggestion** — a technically sound and actionable point, not a false alarm, even if it is not strictly a bug.
-- **Noise** — a finding that is wrong, hallucinated, misreads the code, is not actionable, duplicates another finding, or is pure bikeshedding the project does not want.
-
-**Discipline (do not skip this).** You must open the cited file and lines before you label a finding — never classify from the message text alone. When you are genuinely unsure, label it **Noise**. Precision is the axis that matters here: it is better to under-count signal than to inflate it, because a single wrong "signal" label erodes the user's trust in the whole report. This is your own judgment of your own tool's output, so treat the number as a directional dogfooding signal, not a benchmark score.
-
-Then compute the three summary numbers:
-
-- **Signal %** = (real issues + valid suggestions) / total findings.
-- **Noise %** = noise / total findings.
-- **Signal-to-noise ratio (SNR)** = (real issues + valid suggestions) / noise. The industry trust threshold is about **5:1**; below that, developers start ignoring the tool, so call it out whenever you are under it.
-
-Print the report in exactly this shape — a horizontal signal-versus-noise bar built from block characters, the counts and percentages, the SNR with a warning when it is below 5:1, followed by an auditable per-finding table:
-
-```
-📊 Optibot agent review — signal vs noise   (10 findings)
-
-Signal ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░  70%   7/10
-   🐞 real issues        4
-   💡 valid suggestions  3
-Noise  ▓▓▓▓▓▓░░░░░░░░░░░░░░  30%   3/10
-
-Signal-to-noise ratio: 2.3 : 1   ⚠ below the 5:1 trust threshold
-```
-
-| # | id | file:line | severity | agent verdict | why |
-|---|----|-----------|----------|---------------|-----|
-| 1 | AF-1a2b3c4d5e | `src/auth.ts:42-45` | blocker | 🐞 real issue | Missing null check reachable from the login path. |
-| 2 | AF-9f8e7d6c5b | `src/util.ts:10` | nit | ✗ noise | Style preference the repo's prettier config already enforces. |
-
-Rules for rendering the report:
-
-- The bar is 20 characters wide. On the Signal line, fill the signal fraction with `▓` (rounded to the nearest character) and the remainder with `░`; on the Noise line, do the inverse, filling the noise fraction with `▓`.
-- Keep the two breakdown lines (`🐞 real issues`, `💡 valid suggestions`) only on the Signal side, indented under it, with their raw counts.
-- When the SNR is at or above 5:1, drop the `⚠` note and print `✓ at or above the 5:1 trust threshold` instead.
-- In the verdict column use `🐞` for a real issue, `💡` for a valid suggestion, and `✗` for noise, so the table matches the bar.
-- The `why` column is one short, complete sentence per finding — the reason for the verdict, grounded in what you actually saw when you opened the lines.
-
 ### Resubmit when context is missing
 
 If the response's `missingContext` array is non-empty, the reviewer is telling you it could not see files it needs to judge the change fairly. Read each named file, then re-run agent mode passing those files as context:
@@ -243,7 +198,7 @@ If the response's `missingContext` array is non-empty, the reviewer is telling y
 optibot review --agent --json --related path/to/first.ts --related path/to/second.ts
 ```
 
-Each resubmit round spends one review from your daily quota, so do not loop indefinitely — cap it at about **2 rounds**. Findings carry a stable `id` across rounds, so you can tell which are the same as before and which are new. Once `missingContext` comes back empty (or you have hit the 2-round cap), classify the final set of findings and print the signal-versus-noise report described above.
+Each resubmit round spends one review from your daily quota, so do not loop indefinitely — cap it at about **2 rounds**. Findings carry a stable `id` across rounds, so you can tell which are the same as before and which are new. Once `missingContext` comes back empty (or you have hit the 2-round cap), you are done.
 
 The CLI already enforces this cap for you: its automatic resubmit is bounded by `AGENT_MAX_ROUNDS` (default **2**), and you can tune that bound with `--max-agent-rounds <1-3>` — set `1` to turn the auto-resubmit off entirely (single pass), or `3` to allow one more round. Through the MCP `review_agent` tool there is no such counter: the tool is a single-shot primitive and the host drives every resubmit by re-calling it with `relatedPaths`, so the host owns the round count there.
 
@@ -261,7 +216,7 @@ The full-mode review output has two sections:
 
 ### Agent mode (`optibot review --agent --json`)
 
-Agent mode does not return the Summary and File Comments prose. It returns the structured `AgentReviewResponse` described in [Agent review mode](#agent-review-mode): a `findings` array (each finding carries `id`, `file`, `startLine`/`endLine`, `severity`, `category`, `message`, an optional `suggestedFix`, and a `confidence` score), a one-paragraph `summary`, an overall `status` and `reviewPass`, and `reviewCount` for the daily quota. Read the findings directly instead of parsing prose: sort them by `severity` (`blocker`, then `warning`, then `nit`), open each cited `file` at `startLine`-`endLine`, and weigh each finding's `confidence` when deciding what to act on. Always finish an agent-mode review with the signal-versus-noise self-report.
+Agent mode does not return the Summary and File Comments prose. It returns the structured `AgentReviewResponse` described in [Agent review mode](#agent-review-mode): a `findings` array (each finding carries `id`, `file`, `startLine`/`endLine`, `severity`, `category`, `message`, an optional `suggestedFix`, and a `confidence` score), a one-paragraph `summary`, an overall `status` and `reviewPass`, and `reviewCount` for the daily quota. Read the findings directly instead of parsing prose: sort them by `severity` (`blocker`, then `warning`, then `nit`), open each cited `file` at `startLine`-`endLine`, and weigh each finding's `confidence` when deciding what to act on.
 
 ## After a Review
 
