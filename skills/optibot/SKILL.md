@@ -141,6 +141,7 @@ The `--json` flag makes the CLI return machine-readable findings instead of form
 
 - `--related <path>` (repeatable) — extra context files the reviewer should read that are not part of the diff, for example an interface the changed code implements or a caller of the changed function.
 - `--diagnostics <file>` — a file containing local `tsc`/`eslint` output, so the reviewer can weigh its findings against what your own tools already report.
+- `--max-agent-rounds <n>` — advanced: caps how many review rounds the CLI runs, including its automatic resubmit when the reviewer reports `missingContext`. Accepts `1`-`3` (default `2`). `1` disables the auto-resubmit (a single fast pass, cheapest and most deterministic — good for CI); `3` allows one extra round for a large cross-file change. Each round is one billed review, which is why the range is capped.
 
 **How it differs from full mode.** The plain `optibot review` (and its `-b` / `--diff` variants above) is a thorough, multi-pass review that returns a human-facing Summary plus File Comments. Agent mode is a single fast pass tuned for a coding agent that already has the code: it returns structured findings, trades some recall for higher precision, and is meant to be consumed and acted on programmatically. Reach for full mode when a person is reading the output; reach for agent mode when you are.
 
@@ -243,6 +244,8 @@ optibot review --agent --json --related path/to/first.ts --related path/to/secon
 ```
 
 Each resubmit round spends one review from your daily quota, so do not loop indefinitely — cap it at about **2 rounds**. Findings carry a stable `id` across rounds, so you can tell which are the same as before and which are new. Once `missingContext` comes back empty (or you have hit the 2-round cap), classify the final set of findings and print the signal-versus-noise report described above.
+
+The CLI already enforces this cap for you: its automatic resubmit is bounded by `AGENT_MAX_ROUNDS` (default **2**), and you can tune that bound with `--max-agent-rounds <1-3>` — set `1` to turn the auto-resubmit off entirely (single pass), or `3` to allow one more round. Through the MCP `review_agent` tool there is no such counter: the tool is a single-shot primitive and the host drives every resubmit by re-calling it with `relatedPaths`, so the host owns the round count there.
 
 ## Interpreting Results
 
