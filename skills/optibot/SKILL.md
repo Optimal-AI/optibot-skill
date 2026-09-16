@@ -169,7 +169,7 @@ The same agent-mode review is also available through the Optibot MCP server's `r
   missingContext,      // optional string[] — files the reviewer still wants to see
   reviewCount,         // how many reviews you have used today
   isOptibotInstalled,  // whether the repo has an Optibot config
-  meta                 // { mode, durationMs, ... }
+  meta                 // { mode, durationMs, model, provider }
 }
 ```
 
@@ -177,7 +177,7 @@ Each entry in `findings` has this shape:
 
 ```
 {
-  id,           // stable identifier, e.g. "AF-1a2b3c4d5e" — use this to refer to a finding
+  id,           // label for this finding in THIS response, e.g. "AF-1a2b3c4d5e" — not stable between runs
   file,         // path relative to the repo root
   startLine,
   endLine,
@@ -198,7 +198,7 @@ If the response's `missingContext` array is non-empty, the reviewer is telling y
 optibot review --agent --json --related path/to/first.ts --related path/to/second.ts
 ```
 
-Each resubmit round spends one review from your daily quota, so do not loop indefinitely — cap it at about **2 rounds**. Findings carry a stable `id` across rounds, so you can tell which are the same as before and which are new. Once `missingContext` comes back empty (or you have hit the 2-round cap), you are done.
+Each resubmit round spends one review from your daily quota, so do not loop indefinitely — cap it at about **2 rounds**. Do not match findings across rounds by `id`: the service derives an id from the reviewer's own wording, and the reviewer rephrases itself on every call, so the same defect comes back under a different id. Compare the file, the line range, and the category instead. Once `missingContext` comes back empty (or you have hit the 2-round cap), you are done.
 
 The CLI already enforces this cap for you: its automatic resubmit is bounded by `AGENT_MAX_ROUNDS` (default **2**), and you can tune that bound with `--max-agent-rounds <1-3>` — set `1` to turn the auto-resubmit off entirely (single pass), or `3` to allow one more round. Through the MCP `review_agent` tool there is no such counter: the tool is a single-shot primitive and the host drives every resubmit by re-calling it with `relatedPaths`, so the host owns the round count there.
 

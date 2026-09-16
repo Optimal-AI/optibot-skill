@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-09-16
+
+### Changed
+
+- Agent-mode finding ids are described as labels within one response rather than as stable keys. The service derives an id from the reviewer's own wording and the reviewer rephrases itself on every call, so the same defect comes back under a different id on the next round. The resubmit guidance now says to compare the file, the line range, and the category instead.
+- `meta` in the documented `--json` response shape names its `model` and `provider` fields, which the service always sends.
+
+### Fixed
+
+- `.claude-plugin/marketplace.json` had been left at 1.0.0 while `.claude-plugin/plugin.json` moved with each release. Both now carry the same version, so the marketplace listing matches the plugin it installs.
+
 ## [1.2.1] - 2026-08-21
 
 ### Added
