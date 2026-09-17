@@ -1,6 +1,6 @@
 ---
 name: optibot
-description: Run AI code reviews with Optibot. Use when the user wants to review code changes, compare branches, review diffs, manage authentication or API keys, or set up Optibot in CI/CD (GitHub Actions, GitLab CI, Jenkins). For CI/CD requests, route through `optibot setup ci`.
+description: Run AI code reviews with Optibot. Use when the user wants to review code changes, compare branches, review diffs, manage authentication or API keys, or set up Optibot in CI/CD (GitHub Actions, GitLab CI, Jenkins). For CI/CD requests, route through `optibot setup ci`. When you are a coding agent that already holds the working copy and wants structured findings to act on rather than prose for a human, use agent review mode (`optibot review --agent --json`).
 allowed-tools: Bash(optibot *), Bash(optibot setup ci *), Bash(which optibot), Bash(npm install -g @optimalai/optibot), Bash(npm install @optimalai/optibot), Bash(npx @optimalai/optibot *), Bash(cat ~/.optibot/config.json), Bash(test -f ~/.optibot/config.json *), Bash(echo $OPTIBOT_API_KEY)
 ---
 
@@ -168,8 +168,9 @@ The same agent-mode review is also available through the Optibot MCP server's `r
   reviewPass,          // boolean — did the change pass overall
   findings: [ ... ],   // structured findings, see below
   summary,             // one-paragraph overview
-  missingContext,      // optional string[] — files the reviewer still wants to see
-  reviewCount,         // optional — how many reviews you have used today
+  missingContext,      // optional string[] — files the reviewer still wants to see;
+                       // omitted entirely when it needs nothing
+  reviewCount,         // optional — { current, limit, remaining } for today
   isOptibotInstalled,  // optional — whether the repo has an Optibot config
   meta                 // optional — { mode, durationMs, model, provider }
 }
@@ -185,7 +186,8 @@ Each entry in `findings` has this shape:
   endLine,
   inPatch,      // true if the lines are inside the diff, false if in surrounding context
   severity,     // "blocker" | "warning" | "nit"
-  category,     // e.g. "bug", "security", "performance", "maintainability"
+  category,     // one of: bug, security, performance, refactor, tech-debt,
+                //         duplicate, style, documentation, test, other
   message,      // the finding itself
   suggestedFix, // optional — a concrete fix
   confidence    // 1–10, the reviewer's own confidence
@@ -200,7 +202,7 @@ If the response's `missingContext` array is non-empty, the reviewer is telling y
 optibot review --agent --json --related path/to/first.ts --related path/to/second.ts
 ```
 
-Each resubmit round spends one review from your daily quota, so do not loop indefinitely — cap it at about **2 rounds**. Do not match findings across rounds by `id`: the service derives an id from the reviewer's own wording, and the reviewer rephrases itself on every call, so the same defect comes back under a different id. Compare the file, the line range, and the category instead. Once `missingContext` comes back empty (or you have hit the 2-round cap), you are done.
+Each resubmit round spends one review from your daily quota, so do not loop indefinitely — cap it at about **2 rounds**. Do not match findings across rounds by `id`: the service derives an id from the reviewer's own wording, and the reviewer rephrases itself on every call, so the same defect comes back under a different id. Compare the file, the line range, and the category instead. Once `missingContext` comes back empty or absent (or you have hit the 2-round cap), you are done.
 
 The CLI already enforces this cap for you: its automatic resubmit is bounded by `AGENT_MAX_ROUNDS` (default **2**), and you can tune that bound with `--max-agent-rounds <1-3>` — set `1` to turn the auto-resubmit off entirely (single pass), or `3` to allow one more round. Through the MCP `review_agent` tool there is no such counter: the tool is a single-shot primitive and the host drives every resubmit by re-calling it with `relatedPaths`, so the host owns the round count there.
 
@@ -218,7 +220,7 @@ The full-mode review output has two sections:
 
 ### Agent mode (`optibot review --agent --json`)
 
-Agent mode does not return the Summary and File Comments prose. It returns the structured `AgentReviewResponse` described in [Agent review mode](#agent-review-mode): a `findings` array (each finding carries `id`, `file`, `startLine`/`endLine`, `severity`, `category`, `message`, an optional `suggestedFix`, and a `confidence` score), a one-paragraph `summary`, an overall `status` and `reviewPass`, and `reviewCount` for the daily quota. The last four of those (`missingContext`, `reviewCount`, `isOptibotInstalled`, `meta`) are optional, because older and self-hosted backends may omit them: check each one is present before reading it. Read the findings directly instead of parsing prose: sort them by `severity` (`blocker`, then `warning`, then `nit`), open each cited `file` at `startLine`-`endLine`, and weigh each finding's `confidence` when deciding what to act on.
+Agent mode does not return the Summary and File Comments prose. It returns the structured `AgentReviewResponse` described in [Agent review mode](#agent-review-mode): a `findings` array (each finding carries `id`, `file`, `startLine`/`endLine`, `severity`, `category`, `message`, an optional `suggestedFix`, and a `confidence` score), a one-paragraph `summary`, an overall `status` and `reviewPass`, and `reviewCount` for the daily quota. The last four of those (`missingContext`, `reviewCount`, `isOptibotInstalled`, `meta`) are optional, because older and self-hosted backends may omit them: check each one is present before reading it. When the account has no daily cap, `reviewCount.limit` and `reviewCount.remaining` come back as the service's unlimited sentinel, `9007199254740991` (`Number.MAX_SAFE_INTEGER`). Tell the user there is no daily limit rather than reporting that number. Read the findings directly instead of parsing prose: sort them by `severity` (`blocker`, then `warning`, then `nit`), open each cited `file` at `startLine`-`endLine`, and weigh each finding's `confidence` when deciding what to act on.
 
 ## After a Review
 
