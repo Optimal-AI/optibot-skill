@@ -81,6 +81,7 @@ Once installed, Claude Code can:
 - **Review patch files** — point it at any `.patch` or `.diff` file
 - **Manage API keys** — create, list, and delete keys for CI/CD
 - **Fix issues** — Claude reads the review feedback and offers to apply fixes directly
+- **Review as an agent** — when Claude has just made the changes itself, it runs agent review mode for structured findings it can act on directly instead of prose written for a person
 
 <!-- ## Demo -->
 <!-- ![Optibot reviewing code in Claude Code](assets/demo.gif) -->
@@ -96,6 +97,19 @@ After installing the plugin, just ask Claude naturally:
 | "review this diff" | Reviews an arbitrary patch file |
 | "set up optibot" | Walks you through auth setup |
 | "create an API key for CI" | Creates and displays a new API key |
+| "review the changes you just made" | Runs agent review mode for structured findings |
+
+## Agent review mode
+
+When the reviewer is Claude itself rather than a person — Claude has just written the code and wants a second opinion before committing — the plugin runs agent review mode:
+
+```bash
+optibot review --agent --json
+```
+
+It is a single fast pass that returns structured findings (severity, category, file and line range, a confidence score, and often a suggested fix) instead of the prose summary a person reads. Claude acts on those findings directly. Requires CLI 0.8.0 or later; run `npm install -g @optimalai/optibot` to update.
+
+The same review is available to other AI assistants through the [Optibot MCP server](https://www.npmjs.com/package/@optimalai/optibot-mcp) as the `review_agent` tool, for hosts such as Cursor and Claude Desktop. That tool needs `@optimalai/optibot-mcp` 1.6.0 or later.
 
 ## Authentication
 

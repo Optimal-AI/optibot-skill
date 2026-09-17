@@ -8,7 +8,7 @@
     {
       "name": "optibot",
       "source": "./",
-      "version": "1.0.0",
+      "version": "1.3.0",
       "description": "AI code review that catches production-breaking bugs, business logic issues, and security vulnerabilities — directly in Claude Code.",
       "category": "code-review",
       "keywords": ["code-review", "ai", "git", "diff"]

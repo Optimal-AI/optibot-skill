@@ -1,6 +1,6 @@
 ---
 name: optibot
-description: Run AI code reviews with Optibot. Use when the user wants to review code changes, compare branches, review diffs, manage authentication or API keys, or set up Optibot in CI/CD (GitHub Actions, GitLab CI, Jenkins). For CI/CD requests, route through `optibot setup ci`.
+description: Run AI code reviews with Optibot. Use when the user wants to review code changes, compare branches, review diffs, manage authentication or API keys, or set up Optibot in CI/CD (GitHub Actions, GitLab CI, Jenkins). For CI/CD requests, route through `optibot setup ci`. When you are a coding agent that already holds the working copy and wants structured findings to act on rather than prose for a human, use agent review mode (`optibot review --agent --json`).
 allowed-tools: Bash(optibot *), Bash(optibot setup ci *), Bash(which optibot), Bash(npm install -g @optimalai/optibot), Bash(npm install @optimalai/optibot), Bash(npx @optimalai/optibot *), Bash(cat ~/.optibot/config.json), Bash(test -f ~/.optibot/config.json *), Bash(echo $OPTIBOT_API_KEY)
 ---
 
@@ -95,7 +95,7 @@ If neither the config file nor the environment variable is set, prompt the user 
 
 ## Running Reviews
 
-There are three modes. Pick the right one based on what the user wants reviewed.
+There are three modes. Pick the right one based on what the user wants reviewed. These three modes all return prose written for a human reader. If the caller is itself a coding agent that already holds the working copy and wants fast, structured findings, use [Agent review mode](#agent-review-mode) instead.
 
 ### 1. Review uncommitted local changes
 
@@ -127,15 +127,100 @@ Best for: "review this patch file", "review this diff"
 optibot review --diff path/to/changes.patch
 ```
 
+## Agent review mode
+
+Agent review mode is for when the caller is itself a coding agent that already holds the working copy — the diff and the source files are already on disk locally, and it wants fast, structured findings it can act on directly rather than prose written for a human. If you are that agent (for example, you just made changes in this repository and want a second opinion before committing), use agent mode instead of the full review described above.
+
+Agent mode needs CLI **0.8.0 or later**. If `optibot review --agent` fails with `unknown option`, the user is on an older CLI: tell them to run `npm install -g @optimalai/optibot` and use full mode in the meantime.
+
+Run it with:
+
+```bash
+optibot review --agent --json
+```
+
+The `--json` flag makes the CLI return machine-readable findings instead of formatted prose. You can optionally add:
+
+- `--related <path>` (repeatable) — extra context files the reviewer should read that are not part of the diff, for example an interface the changed code implements or a caller of the changed function.
+- `--diagnostics <file>` — a file containing local `tsc`/`eslint` output, so the reviewer can weigh its findings against what your own tools already report.
+- `--max-agent-rounds <n>` — advanced: caps how many review rounds the CLI runs, including its automatic resubmit when the reviewer reports `missingContext`. Accepts `1`-`3` (default `2`). `1` disables the auto-resubmit (a single fast pass, cheapest and most deterministic — good for CI); `3` allows one extra round for a large cross-file change. Each round is one billed review, which is why the range is capped.
+
+**How it differs from full mode.** The plain `optibot review` (and its `-b` / `--diff` variants above) is a thorough, multi-pass review that returns a human-facing Summary plus File Comments. Agent mode is a single fast pass tuned for a coding agent that already has the code: it returns structured findings, trades some recall for higher precision, and is meant to be consumed and acted on programmatically. Reach for full mode when a person is reading the output; reach for agent mode when you are.
+
+### Ways to run agent mode (and when to use each)
+
+There are a few distinct ways to drive a review, and they compose rather than compete. A typical agent-driven review is the raw agent review, plus a resubmit if the reviewer asked for more context. Use this list to orient yourself, then follow the detailed section each one points to.
+
+- **Raw agent review** (`optibot review --agent --json`) — the fast default. Use it whenever you are a coding agent mid-change and want quick, structured, machine-actionable findings. This is the starting point for every other pattern below.
+- **Missing-context resubmit** — when the response comes back with a non-empty `missingContext` array, the reviewer is telling you it could not see files it needs. Read those files and re-run with `--related`, capped at about two rounds; see [Resubmit when context is missing](#resubmit-when-context-is-missing). Note that the CLI also auto-resubmits on `missingContext` (up to two rounds) on your behalf, so you may already receive the resubmitted result.
+- **Pre-attached context** (`--related <path>` / `--diagnostics <file>`) — when you already know which files matter (the interface the change implements, a caller of the changed function, or your local `tsc`/`eslint` output), attach them up front so the reviewer has them on the first pass. This can avoid a resubmit round entirely; the flags are described in the run instructions above.
+- **Full mode** (plain `optibot review`) — the deepest review Optibot offers, and the right choice whenever a person is going to read the result. It runs multiple server-side passes, follows a change across files, and writes up what it found as a Summary and File Comments a reviewer can take straight into a pull request or a design discussion. Reach for it for large or cross-cutting changes, and for anything you want a human to sign off on; reach for agent mode when you are the one acting on the findings. See [Running Reviews](#running-reviews) for its variants.
+
+The same agent-mode review is also available through the Optibot MCP server's `review_agent` tool for MCP hosts such as Cursor and Claude Desktop, where the host re-calls the tool with `relatedPaths` when the reviewer reports missing context. That tool needs `@optimalai/optibot-mcp` **1.6.0 or later**; on an earlier version the host has no `review_agent` to call, so use the CLI as described above.
+
+### The `--json` response shape
+
+`optibot review --agent --json` returns an `AgentReviewResponse` object:
+
+```
+{
+  status,              // "needs_changes" | "looks_good"
+  reviewPass,          // boolean — did the change pass overall
+  findings: [ ... ],   // structured findings, see below
+  summary,             // one-paragraph overview
+  missingContext,      // optional string[] — files the reviewer still wants to see;
+                       // omitted entirely when it needs nothing
+  reviewCount,         // optional — { current, limit, remaining } for today
+  isOptibotInstalled,  // optional — whether the repo has an Optibot config
+  meta                 // optional — { mode, durationMs, model, provider }
+}
+```
+
+Each entry in `findings` has this shape:
+
+```
+{
+  id,           // label for this finding in THIS response, e.g. "AF-1a2b3c4d5e" — not stable between runs
+  file,         // path relative to the repo root
+  startLine,
+  endLine,
+  inPatch,      // true if the lines are inside the diff, false if in surrounding context
+  severity,     // "blocker" | "warning" | "nit"
+  category,     // one of: bug, security, performance, refactor, tech-debt,
+                //         duplicate, style, documentation, test, other
+  message,      // the finding itself
+  suggestedFix, // optional — a concrete fix
+  confidence    // 1–10, the reviewer's own confidence
+}
+```
+
+### Resubmit when context is missing
+
+If the response's `missingContext` array is non-empty, the reviewer is telling you it could not see files it needs to judge the change fairly. Read each named file, then re-run agent mode passing those files as context:
+
+```bash
+optibot review --agent --json --related path/to/first.ts --related path/to/second.ts
+```
+
+Each resubmit round spends one review from your daily quota, so do not loop indefinitely — cap it at about **2 rounds**. Do not match findings across rounds by `id`: the service derives an id from the reviewer's own wording, and the reviewer rephrases itself on every call, so the same defect comes back under a different id. Compare the file, the line range, and the category instead. Once `missingContext` comes back empty or absent (or you have hit the 2-round cap), you are done.
+
+The CLI already enforces this cap for you: its automatic resubmit is bounded by `AGENT_MAX_ROUNDS` (default **2**), and you can tune that bound with `--max-agent-rounds <1-3>` — set `1` to turn the auto-resubmit off entirely (single pass), or `3` to allow one more round. Through the MCP `review_agent` tool (`@optimalai/optibot-mcp` 1.6.0 or later) there is no such counter: the tool is a single-shot primitive and the host drives every resubmit by re-calling it with `relatedPaths`, so the host owns the round count there.
+
 ## Interpreting Results
 
-The review output has two sections:
+### Full mode (`optibot review`)
+
+The full-mode review output has two sections:
 
 **Review Summary** — A general overview of the changes, patterns noticed, and overall assessment.
 
 **File Comments** — Specific feedback tied to file paths and line numbers. Each comment references the exact file and line range. Use these to navigate directly to the code that needs attention.
 
 **Usage counter** — Shows how many reviews have been used out of the daily limit (e.g., `Reviews used: 3/20 (17 remaining)`).
+
+### Agent mode (`optibot review --agent --json`)
+
+Agent mode does not return the Summary and File Comments prose. It returns the structured `AgentReviewResponse` described in [Agent review mode](#agent-review-mode): a `findings` array (each finding carries `id`, `file`, `startLine`/`endLine`, `inPatch`, `severity`, `category`, `message`, an optional `suggestedFix`, and a `confidence` score), a one-paragraph `summary`, an overall `status` and `reviewPass`, and `reviewCount` for the daily quota. The last four of those (`missingContext`, `reviewCount`, `isOptibotInstalled`, `meta`) are optional, because older and self-hosted backends may omit them: check each one is present before reading it. When the account has no daily cap, `reviewCount.limit` and `reviewCount.remaining` come back as the service's unlimited sentinel, `9007199254740991` (`Number.MAX_SAFE_INTEGER`). Tell the user there is no daily limit rather than reporting that number. Read the findings directly instead of parsing prose: sort them by `severity` (`blocker`, then `warning`, then `nit`), open each cited `file` at `startLine`-`endLine`, and weigh each finding's `confidence` when deciding what to act on. `inPatch` tells you whether the lines are inside the diff or in the surrounding context, which is worth saying out loud when you report a finding on code the user did not touch.
 
 ## After a Review
 
