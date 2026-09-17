@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The Agent review mode section states that agent mode needs CLI 0.8.0 or later, and what to tell the user when an older CLI answers `--agent` with `unknown option`. The file already gave a minimum version for `optibot setup ci`.
 - `missingContext`, `reviewCount`, `isOptibotInstalled`, and `meta` are marked optional in the documented response shape. The CLI types them as optional because older and self-hosted backends may omit them, so an agent has to check each one is present before reading it. A response with nothing to ask for omits `missingContext` entirely rather than sending an empty array.
 - The documented `category` values are the service's real closed set — `bug`, `security`, `performance`, `refactor`, `tech-debt`, `duplicate`, `style`, `documentation`, `test`, `other`. The previous example named `maintainability`, which the service never returns, and the resubmit guidance asks an agent to match findings on category.
+- The Full mode entry in the ways-to-run overview describes what full mode is good at — multiple server-side passes, following a change across files, and a Summary and File Comments a reviewer can take into a pull request — rather than listing what it costs.
+- Both references to the MCP `review_agent` tool, and the one in the README, name the version that carries it: `@optimalai/optibot-mcp` 1.6.0 or later. On an earlier version the host has no such tool, and the skill now says to use the CLI instead.
+- The Interpreting Results field list includes `inPatch`, which tells an agent whether a finding sits inside the diff or in the surrounding context. It was in the response shape but missing from the summary an agent may read on its own.
 - Interpreting Results explains the unlimited-quota sentinel: an account with no daily cap gets `9007199254740991` for `reviewCount.limit` and `reviewCount.remaining`, and the agent should say there is no daily limit instead of reporting that number.
 
 ### Fixed
@@ -31,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - A "Ways to run agent mode (and when to use each)" overview near the top of the Agent review mode section, orienting a coding agent among its choices: the raw agent review, the missing-context resubmit (noting the CLI also auto-resubmits), pre-attached `--related`/`--diagnostics` context, and full mode for a human reader. Each entry cross-references the existing detailed section rather than duplicating it.
 - A note that the same agent-mode review is available through the Optibot MCP server's `review_agent` tool for MCP hosts such as Cursor and Claude Desktop, where the host re-calls the tool with `relatedPaths` when the reviewer reports missing context.
+- The `--max-agent-rounds <1-3>` flag, which caps how many review rounds the CLI runs including its automatic resubmit on `missingContext`. The default is 2; `1` turns the auto-resubmit off for a single deterministic pass, and `3` allows one extra round for a large cross-file change. Each round is one billed review, which is why the range is capped.
 
 ## [1.2.0] - 2026-08-17
 

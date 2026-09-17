@@ -109,7 +109,7 @@ optibot review --agent --json
 
 It is a single fast pass that returns structured findings (severity, category, file and line range, a confidence score, and often a suggested fix) instead of the prose summary a person reads. Claude acts on those findings directly. Requires CLI 0.8.0 or later; run `npm install -g @optimalai/optibot` to update.
 
-The same review is available to other AI assistants through the [Optibot MCP server](https://www.npmjs.com/package/@optimalai/optibot-mcp) as the `review_agent` tool, for hosts such as Cursor and Claude Desktop.
+The same review is available to other AI assistants through the [Optibot MCP server](https://www.npmjs.com/package/@optimalai/optibot-mcp) as the `review_agent` tool, for hosts such as Cursor and Claude Desktop. That tool needs `@optimalai/optibot-mcp` 1.6.0 or later.
 
 ## Authentication
 
