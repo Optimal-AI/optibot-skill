@@ -131,6 +131,8 @@ optibot review --diff path/to/changes.patch
 
 Agent review mode is for when the caller is itself a coding agent that already holds the working copy — the diff and the source files are already on disk locally, and it wants fast, structured findings it can act on directly rather than prose written for a human. If you are that agent (for example, you just made changes in this repository and want a second opinion before committing), use agent mode instead of the full review described above.
 
+Agent mode needs CLI **0.8.0 or later**. If `optibot review --agent` fails with `unknown option`, the user is on an older CLI: tell them to run `npm install -g @optimalai/optibot` and use full mode in the meantime.
+
 Run it with:
 
 ```bash
@@ -167,9 +169,9 @@ The same agent-mode review is also available through the Optibot MCP server's `r
   findings: [ ... ],   // structured findings, see below
   summary,             // one-paragraph overview
   missingContext,      // optional string[] — files the reviewer still wants to see
-  reviewCount,         // how many reviews you have used today
-  isOptibotInstalled,  // whether the repo has an Optibot config
-  meta                 // { mode, durationMs, model, provider }
+  reviewCount,         // optional — how many reviews you have used today
+  isOptibotInstalled,  // optional — whether the repo has an Optibot config
+  meta                 // optional — { mode, durationMs, model, provider }
 }
 ```
 
@@ -216,7 +218,7 @@ The full-mode review output has two sections:
 
 ### Agent mode (`optibot review --agent --json`)
 
-Agent mode does not return the Summary and File Comments prose. It returns the structured `AgentReviewResponse` described in [Agent review mode](#agent-review-mode): a `findings` array (each finding carries `id`, `file`, `startLine`/`endLine`, `severity`, `category`, `message`, an optional `suggestedFix`, and a `confidence` score), a one-paragraph `summary`, an overall `status` and `reviewPass`, and `reviewCount` for the daily quota. Read the findings directly instead of parsing prose: sort them by `severity` (`blocker`, then `warning`, then `nit`), open each cited `file` at `startLine`-`endLine`, and weigh each finding's `confidence` when deciding what to act on.
+Agent mode does not return the Summary and File Comments prose. It returns the structured `AgentReviewResponse` described in [Agent review mode](#agent-review-mode): a `findings` array (each finding carries `id`, `file`, `startLine`/`endLine`, `severity`, `category`, `message`, an optional `suggestedFix`, and a `confidence` score), a one-paragraph `summary`, an overall `status` and `reviewPass`, and `reviewCount` for the daily quota. The last four of those (`missingContext`, `reviewCount`, `isOptibotInstalled`, `meta`) are optional, because older and self-hosted backends may omit them: check each one is present before reading it. Read the findings directly instead of parsing prose: sort them by `severity` (`blocker`, then `warning`, then `nit`), open each cited `file` at `startLine`-`endLine`, and weigh each finding's `confidence` when deciding what to act on.
 
 ## After a Review
 

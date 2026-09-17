@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Agent-mode finding ids are described as labels within one response rather than as stable keys. The service derives an id from the reviewer's own wording and the reviewer rephrases itself on every call, so the same defect comes back under a different id on the next round. The resubmit guidance now says to compare the file, the line range, and the category instead.
 - `meta` in the documented `--json` response shape names its `model` and `provider` fields, which the service always sends.
+- The Agent review mode section states that agent mode needs CLI 0.8.0 or later, and what to tell the user when an older CLI answers `--agent` with `unknown option`. The file already gave a minimum version for `optibot setup ci`.
+- `missingContext`, `reviewCount`, `isOptibotInstalled`, and `meta` are marked optional in the documented response shape. The CLI types them as optional because older and self-hosted backends may omit them, so an agent has to check each one is present before reading it.
 
 ### Fixed
 
@@ -20,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- A "Ways to run agent mode (and when to use each)" overview near the top of the Agent review mode section, orienting a coding agent among its choices: the raw agent review, the agent review plus signal/noise self-report, the missing-context resubmit (noting the CLI also auto-resubmits), pre-attached `--related`/`--diagnostics` context, and full mode for a human reader. Each entry cross-references the existing detailed section rather than duplicating it.
+- A "Ways to run agent mode (and when to use each)" overview near the top of the Agent review mode section, orienting a coding agent among its choices: the raw agent review, the missing-context resubmit (noting the CLI also auto-resubmits), pre-attached `--related`/`--diagnostics` context, and full mode for a human reader. Each entry cross-references the existing detailed section rather than duplicating it.
 - A note that the same agent-mode review is available through the Optibot MCP server's `review_agent` tool for MCP hosts such as Cursor and Claude Desktop, where the host re-calls the tool with `relatedPaths` when the reviewer reports missing context.
 
 ## [1.2.0] - 2026-08-17
@@ -28,7 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Agent review mode guidance in SKILL.md: when the caller is a coding agent that already holds the working copy, it runs `optibot review --agent --json` (optionally with `--related` and `--diagnostics`) for fast, structured findings instead of human-facing prose.
-- The signal-versus-noise self-report: after an agent-mode review, the agent classifies every finding as a real issue, a valid suggestion, or noise, then prints a block-character signal-versus-noise bar with counts, Signal%/Noise%, and the signal-to-noise ratio against the 5:1 trust threshold, followed by an auditable per-finding table.
 - The `missingContext` resubmit loop: read the named files and re-run with `--related`, capped at about two rounds (each round spends one review from the daily quota).
 
 ### Changed
