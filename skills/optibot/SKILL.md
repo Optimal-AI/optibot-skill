@@ -1,7 +1,7 @@
 ---
 name: optibot
 description: Run AI code reviews with Optibot. Use when the user wants to review code changes, compare branches, review diffs, manage authentication or API keys, or set up Optibot in CI/CD (GitHub Actions, GitLab CI, Jenkins). For CI/CD requests, route through `optibot setup ci`. When you are a coding agent that already holds the working copy and wants structured findings to act on rather than prose for a human, use agent review mode (`optibot review --agent --json`).
-allowed-tools: Bash(optibot *), Bash(optibot setup ci *), Bash(which optibot), Bash(where optibot), Bash(npm install -g @optimalai/optibot), Bash(npm uninstall -g optibot), Bash(npm install @optimalai/optibot), Bash(npx @optimalai/optibot *), Bash(cat ~/.optibot/config.json), Bash(test -f ~/.optibot/config.json *), Bash(echo $OPTIBOT_API_KEY)
+allowed-tools: Bash(optibot *), Bash(optibot setup ci *), Bash(which optibot), Bash(where.exe optibot), Bash(npm install -g @optimalai/optibot), Bash(npm uninstall -g optibot), Bash(npm install @optimalai/optibot), Bash(npx @optimalai/optibot *), Bash(cat ~/.optibot/config.json), Bash(test -f ~/.optibot/config.json *), Bash(echo $OPTIBOT_API_KEY)
 ---
 
 # Optibot - AI Code Review from the Terminal
@@ -24,7 +24,7 @@ optibot --version
   npm install -g @optimalai/optibot
   ```
 
-  Both packages provide the `optibot` command, so the uninstall comes first; it does nothing if the old package is not there. Check `optibot --version` again. If it is still below 0.4.0, another copy is earlier on the PATH: show the user the output of `which optibot` (`where optibot` on Windows) and stop there rather than deleting files yourself.
+  Both packages provide the `optibot` command, so the uninstall comes first; it does nothing if the old package is not there. Check `optibot --version` again. If it is still below 0.4.0, another copy is earlier on the PATH: show the user the output of `which optibot` (`where.exe optibot` on Windows; plain `where` is an alias for `Where-Object` in PowerShell) and stop there rather than deleting files yourself.
 - **0.4.0 or later:** carry on. Agent review mode needs 0.8.0, covered in its own section.
 
 The package is `@optimalai/optibot`. Never install, or tell the user to install, the unscoped `optibot` package.
