@@ -172,7 +172,7 @@ The same agent-mode review is also available through the Optibot MCP server's `r
                        // omitted entirely when it needs nothing
   reviewCount,         // optional — { current, limit, remaining } for today
   isOptibotInstalled,  // optional — whether the repo has an Optibot config
-  meta                 // optional — { mode, durationMs, model, provider }
+  meta                 // optional — { mode, durationMs }
 }
 ```
 
