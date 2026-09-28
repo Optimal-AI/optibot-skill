@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `meta` in the documented `--json` response shape is `{ mode, durationMs }`.
+- `meta` in the documented `--json` response shape is `{ mode, durationMs }`. The `model` and `provider` fields documented in 1.3.0 are gone: the service no longer reports them.
 
 ## [1.3.0] - 2026-09-16
 
