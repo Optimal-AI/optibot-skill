@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-09-28
+
+### Fixed
+
+- The skill checks the installed CLI's version, not only that an `optibot` command exists. A CLI below 0.4.0 — which includes the deprecated unscoped `optibot` package, reporting `0.1.0` — is replaced with `@optimalai/optibot` after uninstalling the old package, since both provide the `optibot` command. On those versions `optibot status` fails with `Unexpected token '<'`. Plugin copies installed before the scoped-name fix installed the unscoped package, and the fix never reached them because the plugin version was not bumped with it.
+
 ### Changed
 
 - `meta` in the documented `--json` response shape is `{ mode, durationMs }`.
