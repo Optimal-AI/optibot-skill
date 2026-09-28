@@ -1,7 +1,7 @@
 ---
 name: optibot
 description: Run AI code reviews with Optibot. Use when the user wants to review code changes, compare branches, review diffs, manage authentication or API keys, or set up Optibot in CI/CD (GitHub Actions, GitLab CI, Jenkins). For CI/CD requests, route through `optibot setup ci`. When you are a coding agent that already holds the working copy and wants structured findings to act on rather than prose for a human, use agent review mode (`optibot review --agent --json`).
-allowed-tools: Bash(optibot *), Bash(optibot setup ci *), Bash(which optibot), Bash(npm install -g @optimalai/optibot), Bash(npm install @optimalai/optibot), Bash(npx @optimalai/optibot *), Bash(cat ~/.optibot/config.json), Bash(test -f ~/.optibot/config.json *), Bash(echo $OPTIBOT_API_KEY)
+allowed-tools: Bash(optibot *), Bash(optibot setup ci *), Bash(which optibot), Bash(where optibot), Bash(npm install -g @optimalai/optibot), Bash(npm uninstall -g optibot), Bash(npm install @optimalai/optibot), Bash(npx @optimalai/optibot *), Bash(cat ~/.optibot/config.json), Bash(test -f ~/.optibot/config.json *), Bash(echo $OPTIBOT_API_KEY)
 ---
 
 # Optibot - AI Code Review from the Terminal
@@ -10,17 +10,24 @@ Optibot is a CLI tool that sends code changes to an AI reviewer and returns acti
 
 ## Prerequisites
 
-Before running any optibot command, check if it's installed:
+Before running any optibot command, check that the CLI is installed and recent enough:
 
 ```bash
-which optibot
+optibot --version
 ```
 
-If not found, install it:
+- **Command not found:** install it with `npm install -g @optimalai/optibot`.
+- **Below 0.4.0:** this is the deprecated unscoped `optibot` package or an early release, and `optibot status` fails on it with `Unexpected token '<'`. The deprecated package reports `0.1.0` here, whatever it really is. Tell the user you are replacing an outdated CLI, then run:
 
-```bash
-npm install -g @optimalai/optibot
-```
+  ```bash
+  npm uninstall -g optibot
+  npm install -g @optimalai/optibot
+  ```
+
+  Both packages provide the `optibot` command, so the uninstall comes first; it does nothing if the old package is not there. Check `optibot --version` again. If it is still below 0.4.0, another copy is earlier on the PATH: show the user the output of `which optibot` (`where optibot` on Windows) and stop there rather than deleting files yourself.
+- **0.4.0 or later:** carry on. Agent review mode needs 0.8.0, covered in its own section.
+
+The package is `@optimalai/optibot`. Never install, or tell the user to install, the unscoped `optibot` package.
 
 ## Authentication
 
