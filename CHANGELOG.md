@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `meta` in the documented `--json` response shape is `{ mode, durationMs }`. The service no longer reports which model or provider produced a review, and the CLI and MCP server drop those fields if an older backend still sends them.
+- `meta` in the documented `--json` response shape is `{ mode, durationMs }`.
 
 ## [1.3.0] - 2026-09-16
 
